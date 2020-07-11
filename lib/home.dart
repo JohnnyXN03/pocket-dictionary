@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:dictionary/screens/dashboard.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 
@@ -41,6 +42,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return SafeArea(
         child: Scaffold(
+      backgroundColor: Color(0xff1E272E),
       drawer: Drawer(
         child: ListView(
           children: <Widget>[
@@ -62,122 +64,102 @@ class _HomePageState extends State<HomePage> {
               fontSize: 23, color: Colors.white, fontWeight: FontWeight.normal),
         ),
         centerTitle: true,
-        backgroundColor: Colors.black,
+        elevation: 0,
+        backgroundColor: Color(0xff1E272E),
         bottom: PreferredSize(
-          preferredSize: Size.fromHeight(60),
-          child: Row(
-            children: <Widget>[
-              Expanded(
-                child: Container(
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(3),
-                      color: Colors.white),
-                  margin: EdgeInsets.only(left: 13, bottom: 9),
-                  child: TextFormField(
-                    onChanged: (String text) {
-                      if (_timer?.isActive ?? false) _timer.cancel();
-                      _timer = Timer(const Duration(milliseconds: 1000), () {
-                        _searchword();
-                      });
-                    },
-                    controller: _input,
-                    decoration: InputDecoration(
-                        hintText: 'Type and search',
-                        border: InputBorder.none,
-                        contentPadding: EdgeInsets.only(left: 20),
-                        isDense: false),
-                  ),
+            child: Expanded(
+              child: Container(
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(3),
+                    color: Colors.white),
+                margin: EdgeInsets.all(5),
+                child: TextFormField(
+                  onChanged: (String text) {
+                    if (_timer?.isActive ?? false) _timer.cancel();
+                    _timer = Timer(const Duration(milliseconds: 1000), () {
+                      _searchword();
+                    });
+                  },
+                  controller: _input,
+                  decoration: InputDecoration(
+                      suffixIcon: IconButton(
+                          icon: Icon(Icons.search),
+                          onPressed: () {
+                            _searchword();
+                          }),
+                      hintText: 'Type and search',
+                      border: InputBorder.none,
+                      contentPadding: EdgeInsets.all(10),
+                      isDense: false),
                 ),
               ),
-              IconButton(
-                  icon: Icon(
-                    Icons.search,
-                    color: Colors.white,
-                  ),
-                  onPressed: () {
-                    _searchword();
-                  })
-            ],
-          ),
-        ),
+            ),
+            preferredSize: Size.fromHeight(50)),
       ),
-      body: Container(
-        margin: EdgeInsets.all(10),
-        child: StreamBuilder(
-          stream: _stream,
-          builder: (BuildContext ctx, AsyncSnapshot snapshot) {
-            if (snapshot.data == null) {
-              return Center(
-                // yet to develop front ui
-                child: GridView(
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
+      body: SingleChildScrollView(
+        //...................................................remove this scroll view
+        child: Container(
+          height: MediaQuery.of(context).size.height,
+          width: MediaQuery.of(context).size.width,
+          margin: EdgeInsets.all(10),
+          child: StreamBuilder(
+            stream: _stream,
+            builder: (BuildContext ctx, AsyncSnapshot snapshot) {
+              if (snapshot.data == null) {
+                return Center(child: Dash() // dash board here
+                    );
+              }
+
+              if (snapshot.data == "waiting") {
+                return Center(
+                  child: CircularProgressIndicator(
+                    backgroundColor: Colors.black,
                   ),
-                  children: <Widget>[
-                    Card(
-                      color: Colors.black,
-                    ),
-                    Card(
-                      color: Colors.black,
-                    ),
-                    Card(
-                      color: Colors.black,
-                    ),
-                    Card(
-                      color: Colors.black,
-                    ),
-                  ],
-                ),
-              );
-            }
+                );
+              }
 
-            if (snapshot.data == "waiting") {
-              return Center(
-                child: CircularProgressIndicator(
-                  backgroundColor: Colors.black,
-                ),
-              );
-            }
-
-            return ListView.builder(
-              itemCount: snapshot.data["definitions"].length,
-              itemBuilder: (BuildContext context, int index) {
-                return ListBody(
-                  children: <Widget>[
-                    Container(
-                      color: Colors.black,
-                      child: ListTile(
-                        leading: snapshot.data["definitions"][index]
-                                    ["image_url"] ==
-                                null
-                            ? null
-                            : CircleAvatar(
-                                backgroundImage: NetworkImage(snapshot
-                                    .data["definitions"][index]["image_url"]),
-                              ),
-                        title: Text(
-                          _input.text.trim() +
-                              "  (" +
-                              snapshot.data["definitions"][index]["type"] +
-                              ")",
-                          style: TextStyle(
-                              color: Colors.white, fontWeight: FontWeight.bold),
+              return ListView.builder(
+                itemCount: snapshot.data["definitions"]
+                    .length, // ..................................... action dialoge box here..... generic dialouge box
+                itemBuilder: (BuildContext context, int index) {
+                  return ListBody(
+                    children: <Widget>[
+                      Container(
+                        color: Colors.black,
+                        child: ListTile(
+                          leading: snapshot.data["definitions"][index]
+                                      ["image_url"] ==
+                                  null
+                              ? null
+                              : CircleAvatar(
+                                  backgroundImage: NetworkImage(snapshot
+                                      .data["definitions"][index]["image_url"]),
+                                ),
+                          title: Text(
+                            _input.text.trim() +
+                                "  (" +
+                                snapshot.data["definitions"][index]["type"] +
+                                ")",
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold),
+                          ),
                         ),
                       ),
-                    ),
-                    Container(
-                      color: Colors.black,
-                      padding: const EdgeInsets.all(8.0),
-                      child: Text(
-                        snapshot.data["definitions"][index]["definition"],
-                        style: TextStyle(color: Colors.white),
-                      ),
-                    )
-                  ],
-                );
-              },
-            );
-          },
+                      Container(
+                        color: Colors.black,
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(
+                          snapshot.data["definitions"][index]["definition"],
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      )
+                    ],
+                  );
+                },
+              );
+            },
+          ),
         ),
       ),
     ));
