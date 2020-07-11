@@ -42,7 +42,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return SafeArea(
         child: Scaffold(
-      backgroundColor: Color(0xff1E272E),
+      backgroundColor: Color(0xff586F7C), //0xff1E272E
       drawer: Drawer(
         child: ListView(
           children: <Widget>[
@@ -58,46 +58,66 @@ class _HomePageState extends State<HomePage> {
       ),
       appBar: AppBar(
         actions: <Widget>[],
-        title: Text(
-          'Pocket Dictionary',
-          style: TextStyle(
-              fontSize: 23, color: Colors.white, fontWeight: FontWeight.normal),
-        ),
+        title: Text('Pocket Dictionary',
+            style: TextStyle(
+                fontSize: 20,
+                color: Colors.white,
+                fontWeight: FontWeight.normal)),
         centerTitle: true,
         elevation: 0,
-        backgroundColor: Color(0xff1E272E),
+        backgroundColor: Color(0xff586F7C),
         bottom: PreferredSize(
-            child: Expanded(
-              child: Container(
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(3),
-                    color: Colors.white),
-                margin: EdgeInsets.all(5),
-                child: TextFormField(
-                  onChanged: (String text) {
-                    if (_timer?.isActive ?? false) _timer.cancel();
-                    _timer = Timer(const Duration(milliseconds: 1000), () {
-                      _searchword();
-                    });
-                  },
-                  controller: _input,
-                  decoration: InputDecoration(
-                      suffixIcon: IconButton(
-                          icon: Icon(Icons.search),
-                          onPressed: () {
-                            _searchword();
-                          }),
-                      hintText: 'Type and search',
-                      border: InputBorder.none,
-                      contentPadding: EdgeInsets.all(10),
-                      isDense: false),
+            child: Row(
+              children: <Widget>[
+                Expanded(
+                  child: Container(
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(50),
+                        color: Colors.white),
+                    margin: EdgeInsets.all(5),
+                    child: TextFormField(
+                      onChanged: (String text) {
+                        if (_timer?.isActive ?? false) _timer.cancel();
+                        _timer = Timer(const Duration(milliseconds: 1000), () {
+                          _searchword();
+                        });
+                      },
+                      controller: _input,
+                      decoration: InputDecoration(
+                          prefixIcon: IconButton(
+                              icon: Icon(
+                                Icons.search,
+                                color: Colors.black,
+                              ),
+                              onPressed: () {
+                                _searchword();
+                              }),
+                          hintText: 'Type and search',
+                          hintStyle:
+                              TextStyle(color: Colors.black54, fontSize: 15),
+                          border: InputBorder.none,
+                          contentPadding: EdgeInsets.all(15),
+                          isDense: false),
+                    ),
+                  ),
                 ),
-              ),
+                Container(
+                    padding: EdgeInsets.all(0.5),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(60),
+                      border: Border.all(color: Colors.white, width: 0.2),
+                    ),
+                    child: IconButton(
+                        icon: Icon(
+                          Icons.keyboard_voice,
+                          color: Colors.red,
+                        ),
+                        onPressed: () {}))
+              ],
             ),
-            preferredSize: Size.fromHeight(50)),
+            preferredSize: Size.fromHeight(55)),
       ),
       body: SingleChildScrollView(
-        //...................................................remove this scroll view
         child: Container(
           height: MediaQuery.of(context).size.height,
           width: MediaQuery.of(context).size.width,
@@ -106,8 +126,11 @@ class _HomePageState extends State<HomePage> {
             stream: _stream,
             builder: (BuildContext ctx, AsyncSnapshot snapshot) {
               if (snapshot.data == null) {
-                return Center(child: Dash() // dash board here
-                    );
+                return Container(
+                  width: MediaQuery.of(context).size.width,
+                  child: Center(child: Dash() // dash board here
+                      ),
+                );
               }
 
               if (snapshot.data == "waiting") {
@@ -118,46 +141,54 @@ class _HomePageState extends State<HomePage> {
                 );
               }
 
-              return ListView.builder(
-                itemCount: snapshot.data["definitions"]
-                    .length, // ..................................... action dialoge box here..... generic dialouge box
-                itemBuilder: (BuildContext context, int index) {
-                  return ListBody(
-                    children: <Widget>[
-                      Container(
-                        color: Colors.black,
-                        child: ListTile(
-                          leading: snapshot.data["definitions"][index]
-                                      ["image_url"] ==
-                                  null
-                              ? null
-                              : CircleAvatar(
-                                  backgroundImage: NetworkImage(snapshot
-                                      .data["definitions"][index]["image_url"]),
+              return _input.text != snapshot.data['word']
+                  ? Center(
+                      child: Text('please enter correct word'),
+                    )
+                  : ListView.builder(
+                      itemCount: snapshot.data["definitions"]
+                          .length, // ..................................... action dialoge box here..... generic dialouge box
+                      itemBuilder: (BuildContext context, int index) {
+                        return ListBody(
+                          children: <Widget>[
+                            Container(
+                              color: Colors
+                                  .black, //...................................add if condition here
+                              child: ListTile(
+                                leading: snapshot.data["definitions"][index]
+                                            ["image_url"] ==
+                                        null
+                                    ? null
+                                    : CircleAvatar(
+                                        backgroundImage: NetworkImage(
+                                            snapshot.data["definitions"][index]
+                                                ["image_url"]),
+                                      ),
+                                title: Text(
+                                  _input.text.trim() +
+                                      "  (" +
+                                      snapshot.data["definitions"][index]
+                                          ["type"] +
+                                      ")",
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold),
                                 ),
-                          title: Text(
-                            _input.text.trim() +
-                                "  (" +
-                                snapshot.data["definitions"][index]["type"] +
-                                ")",
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold),
-                          ),
-                        ),
-                      ),
-                      Container(
-                        color: Colors.black,
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text(
-                          snapshot.data["definitions"][index]["definition"],
-                          style: TextStyle(color: Colors.white),
-                        ),
-                      )
-                    ],
-                  );
-                },
-              );
+                              ),
+                            ),
+                            Container(
+                              color: Colors.black,
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                snapshot.data["definitions"][index]
+                                    ["definition"],
+                                style: TextStyle(color: Colors.white),
+                              ),
+                            )
+                          ],
+                        );
+                      },
+                    );
             },
           ),
         ),

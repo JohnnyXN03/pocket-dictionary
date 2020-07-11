@@ -1,3 +1,5 @@
+import 'package:dictionary/screens/alllang.dart';
+import 'package:dictionary/screens/native.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -13,7 +15,13 @@ class MyApp extends StatelessWidget {
     ]);
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: HomePage(),
+      //  home: HomePage(),
+
+      routes: {
+        '/': (context) => HomePage(),
+        '/first': (context) => Native(),
+        '/second': (context) => LangList()
+      },
     );
   }
 }
