@@ -139,41 +139,38 @@ class _HomePageState extends State<HomePage> {
             }
 
             return ListView.builder(
+              shrinkWrap: true,
               itemCount: snapshot.data["definitions"]
                   .length, // ..................................... action dialoge box here..... generic dialouge box
               itemBuilder: (BuildContext context, int index) {
                 return ListBody(
                   children: <Widget>[
                     Container(
+                      padding: EdgeInsets.all(5),
+                      alignment: Alignment.center,
                       color: Colors
                           .black, //...................................add if condition here
-                      child: ListTile(
-                        leading: snapshot.data["definitions"][index]
-                                    ["image_url"] ==
-                                null
-                            ? null
-                            : CircleAvatar(
-                                backgroundImage: NetworkImage(snapshot
-                                    .data["definitions"][index]["image_url"]),
-                              ),
-                        title: Text(
+                      child: Text(
                           _input.text.trim() +
                               "  (" +
                               snapshot.data["definitions"][index]["type"] +
                               ")",
                           style: TextStyle(
-                              color: Colors.white, fontWeight: FontWeight.bold),
-                        ),
-                      ),
+                              color: Colors.amber,
+                              fontWeight: FontWeight.w400,
+                              fontSize: 21)),
                     ),
                     Container(
                       color: Colors.black,
-                      padding: const EdgeInsets.all(8.0),
+                      padding: const EdgeInsets.all(14),
                       child: Text(
-                        snapshot.data["definitions"][index]["definition"],
-                        style: TextStyle(color: Colors.white),
-                      ),
-                    )
+                          snapshot.data["definitions"][index]["definition"],
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 15,
+                            fontFamily: 'Raleway',
+                          )),
+                    ),
                   ],
                 );
               },
