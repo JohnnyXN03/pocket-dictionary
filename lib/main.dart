@@ -1,5 +1,3 @@
-import 'package:dictionary/screens/alllang.dart';
-import 'package:dictionary/screens/native.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -14,13 +12,14 @@ class MyApp extends StatelessWidget {
       DeviceOrientation.portraitUp,
     ]);
     return MaterialApp(
+    //  theme: ThemeData.dark(),
       debugShowCheckedModeBanner: false,
       //  home: HomePage(),
 
       routes: {
         '/': (context) => HomePage(),
-        '/first': (context) => Native(),
-        '/second': (context) => LangList()
+        //  '/first': (context) => Native(),
+        //  '/second': (context) => LangList()
       },
     );
   }
