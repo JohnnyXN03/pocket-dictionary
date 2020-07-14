@@ -48,22 +48,15 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        bottomNavigationBar: BottomAppBar(
-          color: Colors.white,
-          elevation: 1,
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              IconButton(icon: Icon(Icons.menu), onPressed: () {}),
-              IconButton(
-                  icon: Icon(Icons.favorite),
-                  onPressed: () {},
-                  color: Colors.black),
-            ],
-          ),
-        ),
         appBar: AppBar(
+          actions: <Widget>[
+            IconButton(
+                icon: Icon(
+                  Icons.favorite,
+                  color: Colors.white,
+                ),
+                onPressed: () {})
+          ],
           backgroundColor: Colors.black,
           centerTitle: true,
           title: Text(
@@ -120,6 +113,7 @@ class _HomePageState extends State<HomePage> {
           builder: (BuildContext ctx, AsyncSnapshot snapshot) {
             if (snapshot.data == null) {
               return Container(
+                height: MediaQuery.of(context).size.height,
                 width: MediaQuery.of(context).size.width,
                 child: Dashboard(), // Dash() // dash board here
               );
@@ -133,47 +127,63 @@ class _HomePageState extends State<HomePage> {
               );
             }
             if (snapshot.data == 'NoData') {
-              return Center(
-                child: Text('Enter something meaningful'),
+              return Container(
+                height: MediaQuery.of(context).size.width,
+                width: MediaQuery.of(context).size.height,
+                child: Center(
+                  child: Text(
+                    'Enter something meaningful',
+                    style: TextStyle(
+                        color: Colors.black,
+                        fontFamily: 'Raleway',
+                        fontSize: 23,
+                        fontWeight: FontWeight.w400),
+                  ),
+                ),
               );
             }
 
-            return ListView.builder(
-              shrinkWrap: true,
-              itemCount: snapshot.data["definitions"]
-                  .length, // ..................................... action dialoge box here..... generic dialouge box
-              itemBuilder: (BuildContext context, int index) {
-                return ListBody(
-                  children: <Widget>[
-                    Container(
-                      padding: EdgeInsets.all(5),
-                      alignment: Alignment.center,
-                      color: Colors
-                          .black, //...................................add if condition here
-                      child: Text(
-                          _input.text.trim() +
-                              "  (" +
-                              snapshot.data["definitions"][index]["type"] +
-                              ")",
-                          style: TextStyle(
-                              color: Colors.amber,
-                              fontWeight: FontWeight.w400,
-                              fontSize: 21)),
-                    ),
-                    Container(
-                      color: Colors.black,
-                      padding: const EdgeInsets.all(14),
-                      child: Text(
-                          snapshot.data["definitions"][index]["definition"],
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 15,
-                            fontFamily: 'Raleway',
-                          )),
-                    ),
-                  ],
-                );
-              },
+            return Container(
+              color: Colors.black,
+              height: MediaQuery.of(context).size.height,
+              width: MediaQuery.of(context).size.width,
+              child: ListView.builder(
+                shrinkWrap: true,
+                itemCount: snapshot.data["definitions"]
+                    .length, // ..................................... action dialoge box here..... generic dialouge box
+                itemBuilder: (BuildContext context, int index) {
+                  return ListBody(
+                    children: <Widget>[
+                      Container(
+                        padding: EdgeInsets.all(5),
+                        alignment: Alignment.center,
+                        color: Colors
+                            .black, //...................................add if condition here
+                        child: Text(
+                            _input.text.trim() +
+                                "  (" +
+                                snapshot.data["definitions"][index]["type"] +
+                                ")",
+                            style: TextStyle(
+                                color: Colors.amber,
+                                fontWeight: FontWeight.w400,
+                                fontSize: 21)),
+                      ),
+                      Container(
+                        color: Colors.black,
+                        padding: const EdgeInsets.all(14),
+                        child: Text(
+                            snapshot.data["definitions"][index]["definition"],
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 15,
+                              fontFamily: 'Raleway',
+                            )),
+                      ),
+                    ],
+                  );
+                },
+              ),
             );
           },
         ),

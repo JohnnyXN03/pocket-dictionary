@@ -6,7 +6,7 @@ class Dashboard extends StatefulWidget {
 }
 
 class _DashboardState extends State<Dashboard> {
-  TextEditingController _input = TextEditingController();
+  TextEditingController _edit = TextEditingController();
   TextEditingController _textEditingController = TextEditingController();
   @override
   Widget build(BuildContext context) {
@@ -67,7 +67,7 @@ class _DashboardState extends State<Dashboard> {
               width: MediaQuery.of(context).size.width,
               child: TextFormField(
                 style: TextStyle(color: Colors.white),
-                controller: _input,
+                controller: _edit,
                 autovalidate: true,
                 decoration: InputDecoration(
                   focusColor: Colors.white,
