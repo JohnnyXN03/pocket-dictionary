@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:translator/translator.dart';
 
 class Dashboard extends StatefulWidget {
   @override
@@ -6,6 +7,55 @@ class Dashboard extends StatefulWidget {
 }
 
 class _DashboardState extends State<Dashboard> {
+  List _items = [
+    "Hindi",
+    "English",
+    "Bengali",
+    "Punjabi",
+    "Gujarati",
+    "Arabic",
+    "Punjabi",
+    "Kannada",
+    "Tamil",
+    "Finnish",
+    "French",
+    "German",
+    "Greek",
+    "Indonesian",
+    "Italian",
+    "Japanese",
+    "Korean",
+    "Malayalam",
+    "Marathi",
+    "Russian",
+    "Spanish",
+    "Swedish",
+    "Tamil",
+    "Telugu",
+    "Urdu",
+    "Sindhi",
+  ];
+  String out;
+  GoogleTranslator translator = GoogleTranslator();
+  void translate() {
+    translator
+        .translate(_textEditingController.text, to: 'hi')
+        .then((value) => showDialog(
+            context: context,
+            builder: (BuildContext ctx) {
+              return AlertDialog(
+                actions: <Widget>[
+                  IconButton(
+                      icon: Icon(Icons.close),
+                      onPressed: () {
+                        Navigator.pop(context);
+                      })
+                ],
+                content: Text(value.toString()),
+              );
+            }));
+  }
+
   TextEditingController _edit = TextEditingController();
   TextEditingController _textEditingController = TextEditingController();
   @override
@@ -133,8 +183,59 @@ class _DashboardState extends State<Dashboard> {
                         Icons.done,
                         color: Colors.white,
                       ),
-                      onPressed:
-                          () {}), //  ....................native search here
+                      onPressed: () {
+                        showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return Dialog(
+                                backgroundColor: Colors.white,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                elevation: 10,
+                                child: ListView(
+                                  children: <Widget>[
+                                    ListTile(
+                                      onTap: () {
+                                        translate();
+                                      },
+                                      title: Text(
+                                        'Hindi',
+                                        style: TextStyle(
+                                            fontFamily: 'Raleway',
+                                            fontSize: 13,
+                                            color: Colors.black),
+                                      ),
+                                    ),
+                                    ListTile(
+                                      onTap: () {
+                                        translate();
+                                      },
+                                      title: Text(
+                                        'Hindi',
+                                        style: TextStyle(
+                                            fontFamily: 'Raleway',
+                                            fontSize: 13,
+                                            color: Colors.black),
+                                      ),
+                                    ),
+                                    ListTile(
+                                      onTap: () {
+                                        translate();
+                                      },
+                                      title: Text(
+                                        'Hindi',
+                                        style: TextStyle(
+                                            fontFamily: 'Raleway',
+                                            fontSize: 13,
+                                            color: Colors.black),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            });
+                      }), //  ...>.................translator here
                   enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(20),
                       borderSide: BorderSide(color: Colors.white, width: 0.5)),

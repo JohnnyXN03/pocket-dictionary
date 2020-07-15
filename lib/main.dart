@@ -12,13 +12,13 @@ class MyApp extends StatelessWidget {
       DeviceOrientation.portraitUp,
     ]);
     return MaterialApp(
-    //  theme: ThemeData.dark(),
+      //  theme: ThemeData.dark(),
       debugShowCheckedModeBanner: false,
       //  home: HomePage(),
 
       routes: {
         '/': (context) => HomePage(),
-        //  '/first': (context) => Native(),
+        // '/first': (context) => Trans(),
         //  '/second': (context) => LangList()
       },
     );
