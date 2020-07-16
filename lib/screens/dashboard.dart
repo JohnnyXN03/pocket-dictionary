@@ -9,12 +9,10 @@ class Dashboard extends StatefulWidget {
 class _DashboardState extends State<Dashboard> {
   List _items = [
     "Hindi",
-    "English",
     "Bengali",
     "Punjabi",
     "Gujarati",
     "Arabic",
-    "Punjabi",
     "Kannada",
     "Tamil",
     "Finnish",
@@ -30,21 +28,55 @@ class _DashboardState extends State<Dashboard> {
     "Russian",
     "Spanish",
     "Swedish",
-    "Tamil",
     "Telugu",
     "Urdu",
     "Sindhi",
+    "English",
+    "Oriya"
   ];
-  String out;
+  List _list = [
+    "hi",
+    "bn",
+    "pa",
+    "ga",
+    "ar",
+    "kn",
+    "ta",
+    "fi",
+    "fr",
+    "de",
+    "el",
+    "id",
+    "it",
+    "ja",
+    "ko",
+    "ml",
+    "mr",
+    "ru",
+    "es",
+    "sv",
+    "te",
+    "ur",
+    "sd",
+    "en",
+    "or"
+  ];
   GoogleTranslator translator = GoogleTranslator();
-  void translate() {
+  void translate(String code) {
     translator
-        .translate(_textEditingController.text, to: 'hi')
+        .translate(_textEditingController.text, to: code)
         .then((value) => showDialog(
             context: context,
             builder: (BuildContext ctx) {
               return AlertDialog(
                 actions: <Widget>[
+                  IconButton(
+                      icon: Icon(Icons.content_copy),
+                      onPressed: () {}), //................copy to clipborad
+                  IconButton(
+                      icon: Icon(Icons.share),
+                      onPressed:
+                          () {}), //..........................share to whats up
                   IconButton(
                       icon: Icon(Icons.close),
                       onPressed: () {
@@ -193,45 +225,47 @@ class _DashboardState extends State<Dashboard> {
                                   borderRadius: BorderRadius.circular(10),
                                 ),
                                 elevation: 10,
-                                child: ListView(
-                                  children: <Widget>[
-                                    ListTile(
-                                      onTap: () {
-                                        translate();
-                                      },
-                                      title: Text(
-                                        'Hindi',
-                                        style: TextStyle(
-                                            fontFamily: 'Raleway',
-                                            fontSize: 13,
-                                            color: Colors.black),
+                                child: Center(
+                                  child: ListView(
+                                    children: <Widget>[
+                                      ListTile(
+                                        onTap: () {
+                                          translate('hi');
+                                        },
+                                        title: Text(
+                                          _items[0],
+                                          style: TextStyle(
+                                              fontFamily: 'Raleway',
+                                              fontSize: 15,
+                                              color: Colors.black),
+                                        ),
                                       ),
-                                    ),
-                                    ListTile(
-                                      onTap: () {
-                                        translate();
-                                      },
-                                      title: Text(
-                                        'Hindi',
-                                        style: TextStyle(
-                                            fontFamily: 'Raleway',
-                                            fontSize: 13,
-                                            color: Colors.black),
+                                      ListTile(
+                                        onTap: () {
+                                          translate('bn');
+                                        },
+                                        title: Text(
+                                          _items[1],
+                                          style: TextStyle(
+                                              fontFamily: 'Raleway',
+                                              fontSize: 15,
+                                              color: Colors.black),
+                                        ),
                                       ),
-                                    ),
-                                    ListTile(
-                                      onTap: () {
-                                        translate();
-                                      },
-                                      title: Text(
-                                        'Hindi',
-                                        style: TextStyle(
-                                            fontFamily: 'Raleway',
-                                            fontSize: 13,
-                                            color: Colors.black),
+                                      ListTile(
+                                        onTap: () {
+                                          translate('pa');
+                                        },
+                                        title: Text(
+                                          _items[2],
+                                          style: TextStyle(
+                                              fontFamily: 'Raleway',
+                                              fontSize: 15,
+                                              color: Colors.black),
+                                        ),
                                       ),
-                                    ),
-                                  ],
+                                    ],
+                                  ),
                                 ),
                               );
                             });
