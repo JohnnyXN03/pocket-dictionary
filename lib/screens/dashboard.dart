@@ -7,7 +7,7 @@ class Dashboard extends StatefulWidget {
 }
 
 class _DashboardState extends State<Dashboard> {
-  List _items = [
+  List<String> _items = [
     "Hindi",
     "Bengali",
     "Punjabi",
@@ -32,9 +32,10 @@ class _DashboardState extends State<Dashboard> {
     "Urdu",
     "Sindhi",
     "English",
-    "Oriya"
+    "Oriya",
+    "Nepali"
   ];
-  List _list = [
+  List<String> _list = [
     "hi",
     "bn",
     "pa",
@@ -60,6 +61,7 @@ class _DashboardState extends State<Dashboard> {
     "sd",
     "en",
     "or"
+        "ne"
   ];
   GoogleTranslator translator = GoogleTranslator();
   void translate(String code) {
@@ -220,54 +222,47 @@ class _DashboardState extends State<Dashboard> {
                             context: context,
                             builder: (BuildContext context) {
                               return Dialog(
-                                backgroundColor: Colors.white,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                                elevation: 10,
-                                child: Center(
-                                  child: ListView(
-                                    children: <Widget>[
-                                      ListTile(
-                                        onTap: () {
-                                          translate('hi');
-                                        },
-                                        title: Text(
-                                          _items[0],
-                                          style: TextStyle(
-                                              fontFamily: 'Raleway',
-                                              fontSize: 15,
-                                              color: Colors.black),
-                                        ),
-                                      ),
-                                      ListTile(
-                                        onTap: () {
-                                          translate('bn');
-                                        },
-                                        title: Text(
-                                          _items[1],
-                                          style: TextStyle(
-                                              fontFamily: 'Raleway',
-                                              fontSize: 15,
-                                              color: Colors.black),
-                                        ),
-                                      ),
-                                      ListTile(
-                                        onTap: () {
-                                          translate('pa');
-                                        },
-                                        title: Text(
-                                          _items[2],
-                                          style: TextStyle(
-                                              fontFamily: 'Raleway',
-                                              fontSize: 15,
-                                              color: Colors.black),
-                                        ),
-                                      ),
-                                    ],
+                                  backgroundColor: Colors.white,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10),
                                   ),
-                                ),
-                              );
+                                  elevation: 10,
+                                  child: Center(
+                                    child: ListView.builder(
+                                      itemBuilder: (ctx, index) {
+                                        return InkWell(
+                                          onTap: () {
+                                            translate(_list[index].toString());
+                                          },
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Card(
+                                              margin: EdgeInsets.only(
+                                                  left: 6, right: 6),
+                                              elevation: 1,
+                                              child: Center(
+                                                child: Padding(
+                                                  padding:
+                                                      const EdgeInsets.all(6.0),
+                                                  child: Text(
+                                                    _items[index].toString(),
+                                                    style: TextStyle(
+                                                        color: Colors.black,
+                                                        fontFamily: 'Raleway',
+                                                        fontWeight:
+                                                            FontWeight.w400,
+                                                        fontSize: 21),
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                      itemCount: 25,
+                                      shrinkWrap: true,
+                                    ),
+                                  ));
                             });
                       }), //  ...>.................translator here
                   enabledBorder: OutlineInputBorder(
