@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:translator/translator.dart';
+import 'package:share_it/share_it.dart';
 
 class Dashboard extends StatefulWidget {
   @override
@@ -60,8 +62,8 @@ class _DashboardState extends State<Dashboard> {
     "ur",
     "sd",
     "en",
-    "or"
-        "ne"
+    "or",
+    "ne"
   ];
   GoogleTranslator translator = GoogleTranslator();
   void translate(String code) {
@@ -74,18 +76,27 @@ class _DashboardState extends State<Dashboard> {
                 actions: <Widget>[
                   IconButton(
                       icon: Icon(Icons.content_copy),
-                      onPressed: () {}), //................copy to clipborad
+                      onPressed: () {
+                        Clipboard.setData(ClipboardData(text: value));
+                      }), //................copy to clipborad
                   IconButton(
                       icon: Icon(Icons.share),
-                      onPressed:
-                          () {}), //..........................share to whats up
+                      onPressed: () {
+                        ShareIt.text(
+                            content: value,
+                            androidSheetTitle: _textEditingController.text);
+                      }), //..........................share to whats up
                   IconButton(
                       icon: Icon(Icons.close),
                       onPressed: () {
                         Navigator.pop(context);
                       })
                 ],
-                content: Text(value.toString()),
+                content: SelectableText(
+                  value.toString(),
+                  style: TextStyle(
+                      fontFamily: 'Raleway', fontWeight: FontWeight.w400),
+                ),
               );
             }));
   }
