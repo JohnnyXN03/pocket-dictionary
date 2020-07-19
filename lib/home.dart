@@ -48,6 +48,13 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+        floatingActionButton: FloatingActionButton.extended(
+          onPressed:
+              () {}, //.........................................scan and translate here
+          label: Text('Scan and Translate'),
+          isExtended: true,
+          icon: Icon(Icons.camera_alt),
+        ),
         appBar: AppBar(
           actions: <Widget>[
             IconButton(
