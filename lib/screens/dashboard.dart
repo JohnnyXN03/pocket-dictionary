@@ -12,7 +12,7 @@ class Dashboard extends StatefulWidget {
 }
 
 class _DashboardState extends State<Dashboard> {
-  List meaning;
+  List<dynamic> data = [];
 
   TextEditingController _edit = TextEditingController();
   TextEditingController _textEditingController = TextEditingController();
@@ -108,18 +108,33 @@ class _DashboardState extends State<Dashboard> {
             }));
   }
 
-  Future fetchmeaning(String ind) async {
-    var translate = await translator.translate(_edit.text,
-        to: ind); //...........transltesd funtion.
-    var response = await http.get(
-        'http://api.dictionaryapi.dev/api/v1/entries/' + ind + '/' + translate);
-    return response.body;
+//  trans() async {
+//    var translate = await translator.translate(_edit.text, to: 'hi');
+//    return translate;
+//  }
 
-    //   setState(() {
-    //    meaning = json.decode(response.body);
-    //   });
-    //return function here
-    // return
+  Future<List<Map<String, dynamic>>> fetchmeaning() async {
+    http.Response response = await http.get(
+        'http://api.dictionaryapi.dev/api/v2/entries/en/' + _edit.text.trim());
+    if (response.statusCode != 200) {
+      return null;
+    } else {
+      setState(() {
+        data = List<Map<String, dynamic>>.from(
+            json.decode(response.body)['meanings']);
+      });
+    }
+  }
+
+  fetch() async {
+    fetchmeaning();
+    print('done');
+  }
+
+  @override
+  void initState() {
+    fetchmeaning();
+    super.initState();
   }
 
   @override
@@ -220,40 +235,25 @@ class _DashboardState extends State<Dashboard> {
                                                 builder:
                                                     (BuildContext context) {
                                                   return Dialog(
-                                                    child: FutureBuilder(
-                                                      builder: (context, snap) {
-                                                        if (snap.hasData ==
-                                                            null) {
-                                                          return Container(
-                                                            child:
-                                                                Text('No data'),
-                                                          );
-                                                        }
-                                                        return ListView.builder(
-                                                          //..................................work here
-                                                          shrinkWrap: true,
-                                                          itemBuilder:
-                                                              (context, index) {
-                                                            return Column(
-                                                              children: <
-                                                                  Widget>[
-                                                                Text(
-                                                                    _edit.text),
-                                                                Text(snap.data[
-                                                                        'meaning']
-                                                                        [index][
-                                                                        'definition']
-                                                                    .toString()),
-                                                              ],
-                                                            );
-                                                          },
-                                                          itemCount: 5,
+                                                    child: ListView.builder(
+                                                      itemBuilder:
+                                                          (ctx, index) {
+                                                        return Card(
+                                                          child: Text(data[index]
+                                                                          [
+                                                                          'meanings']
+                                                                      [
+                                                                      'definitions']
+                                                                  ['definition']
+                                                              .toString()),
                                                         );
                                                       },
-                                                      future: fetchmeaning(
-                                                          _list.toString()),
+                                                      itemCount:
+                                                          data.length == null
+                                                              ? 0
+                                                              : data.length,
                                                     ),
-                                                  );
+                                                  ); //.............................here
                                                 });
                                           },
                                           child: Padding(
