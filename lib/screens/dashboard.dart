@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:translator/translator.dart';
 import 'package:share_it/share_it.dart';
@@ -12,8 +13,9 @@ class Dashboard extends StatefulWidget {
 }
 
 class _DashboardState extends State<Dashboard> {
-  List<dynamic> data = [];
-
+  List meaning = [];
+  String _ur = 'https://owlbot.info/api/v4/dictionary/';
+  String _token = 'f54f7ebb212e7b91e6c162fcb910723dbb83031a';
   TextEditingController _edit = TextEditingController();
   TextEditingController _textEditingController = TextEditingController();
   List<String> _items = [
@@ -108,33 +110,13 @@ class _DashboardState extends State<Dashboard> {
             }));
   }
 
-//  trans() async {
-//    var translate = await translator.translate(_edit.text, to: 'hi');
-//    return translate;
-//  }
-
-  Future<List<Map<String, dynamic>>> fetchmeaning() async {
-    http.Response response = await http.get(
-        'http://api.dictionaryapi.dev/api/v2/entries/en/' + _edit.text.trim());
-    if (response.statusCode != 200) {
-      return null;
-    } else {
-      setState(() {
-        data = List<Map<String, dynamic>>.from(
-            json.decode(response.body)['meanings']);
-      });
-    }
-  }
-
-  fetch() async {
-    fetchmeaning();
-    print('done');
-  }
-
-  @override
-  void initState() {
-    fetchmeaning();
-    super.initState();
+  Future<List<dynamic>> fetch() async {
+    http.Response response = await http.get(_ur + _edit.text.trim(),
+        headers: {"Authorization": "Token " + _token});
+    setState(() {
+      meaning = json.decode(response.body)["definitions"];
+    });
+    print(meaning.length);
   }
 
   @override
@@ -234,26 +216,41 @@ class _DashboardState extends State<Dashboard> {
                                                 context: context,
                                                 builder:
                                                     (BuildContext context) {
-                                                  return Dialog(
-                                                    child: ListView.builder(
-                                                      itemBuilder:
-                                                          (ctx, index) {
-                                                        return Card(
-                                                          child: Text(data[index]
-                                                                          [
-                                                                          'meanings']
-                                                                      [
-                                                                      'definitions']
-                                                                  ['definition']
-                                                              .toString()),
-                                                        );
-                                                      },
-                                                      itemCount:
-                                                          data.length == null
-                                                              ? 0
-                                                              : data.length,
-                                                    ),
-                                                  ); //.............................here
+                                                  return AlertDialog(
+                                                      content: FutureBuilder(
+                                                          future: fetch(),
+                                                          initialData: [],
+                                                          builder: (context,
+                                                              snapshot) {
+                                                            return ListView
+                                                                .builder(
+                                                                    itemCount: meaning ==
+                                                                            null
+                                                                        ? CircularProgressIndicator()
+                                                                        : meaning
+                                                                            .length,
+                                                                    itemBuilder:
+                                                                        (context,
+                                                                            index) {
+                                                                      return ListTile(
+                                                                        title:
+                                                                            Text(
+                                                                          _edit
+                                                                              .text,
+                                                                          style:
+                                                                              TextStyle(fontFamily: 'Raleway'),
+                                                                        ),
+                                                                        subtitle:
+                                                                            Text(
+                                                                          meaning[index]
+                                                                              [
+                                                                              "definition"],
+                                                                          style:
+                                                                              TextStyle(fontFamily: 'Raleway'),
+                                                                        ),
+                                                                      );
+                                                                    });
+                                                          })); //.............................here
                                                 });
                                           },
                                           child: Padding(
