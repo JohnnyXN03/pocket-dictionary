@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:translator/translator.dart';
 import 'package:share_it/share_it.dart';
 import 'package:http/http.dart' as http;
+import './json.dart';
 
 class Dashboard extends StatefulWidget {
   @override
@@ -13,9 +14,8 @@ class Dashboard extends StatefulWidget {
 }
 
 class _DashboardState extends State<Dashboard> {
-  List meaning = [];
-  String _ur = 'https://owlbot.info/api/v4/dictionary/';
-  String _token = 'f54f7ebb212e7b91e6c162fcb910723dbb83031a';
+  String _ur = "https://api.dictionaryapi.dev/api/v2/entries/";
+//  String _token = 'f54f7ebb212e7b91e6c162fcb910723dbb83031a';
   TextEditingController _edit = TextEditingController();
   TextEditingController _textEditingController = TextEditingController();
   List<String> _items = [
@@ -110,13 +110,11 @@ class _DashboardState extends State<Dashboard> {
             }));
   }
 
-  Future<List<dynamic>> fetch() async {
-    http.Response response = await http.get(_ur + _edit.text.trim(),
-        headers: {"Authorization": "Token " + _token});
-    setState(() {
-      meaning = json.decode(response.body)["definitions"];
-    });
-    print(meaning.length);
+  // ignore: missing_return
+  Future<Meaning> fetch(String lng) async {
+    var translation = await translator.translate(_edit.text.trim(), to: "en");
+    var response = await http.get(_ur + lng + "/" + translation);
+    return Meaning.fromJson(json.decode(response.body));
   }
 
   @override
@@ -216,40 +214,53 @@ class _DashboardState extends State<Dashboard> {
                                                 context: context,
                                                 builder:
                                                     (BuildContext context) {
-                                                  return AlertDialog(
-                                                      content: FutureBuilder(
-                                                          future: fetch(),
-                                                          initialData: [],
+                                                  //.........................................future builder here
+                                                  return Dialog(
+                                                      child: FutureBuilder<
+                                                              Meaning>(
+                                                          future: fetch(
+                                                              _list[index]
+                                                                  .toString()),
                                                           builder: (context,
                                                               snapshot) {
-                                                            return ListView
-                                                                .builder(
-                                                                    itemCount: meaning ==
-                                                                            null
-                                                                        ? CircularProgressIndicator()
-                                                                        : meaning
-                                                                            .length,
-                                                                    itemBuilder:
-                                                                        (context,
-                                                                            index) {
-                                                                      return ListTile(
-                                                                        title:
-                                                                            Text(
-                                                                          _edit
-                                                                              .text,
-                                                                          style:
-                                                                              TextStyle(fontFamily: 'Raleway'),
-                                                                        ),
-                                                                        subtitle:
-                                                                            Text(
-                                                                          meaning[index]
-                                                                              [
-                                                                              "definition"],
-                                                                          style:
-                                                                              TextStyle(fontFamily: 'Raleway'),
-                                                                        ),
-                                                                      );
-                                                                    });
+                                                            if (snapshot
+                                                                .hasData) {
+                                                              List<Meanings>
+                                                                  data =
+                                                                  snapshot.data
+                                                                      .meanings;
+                                                              return ListView
+                                                                  .builder(
+                                                                      itemCount: snapshot.data.meanings ==
+                                                                              null
+                                                                          ? 0
+                                                                          : snapshot
+                                                                              .data
+                                                                              .meanings,
+                                                                      itemBuilder:
+                                                                          (context,
+                                                                              index) {
+                                                                        return Column(
+                                                                          children: <
+                                                                              Widget>[
+                                                                            ListTile(
+                                                                              title: Text(
+                                                                                _edit.text.trim(),
+                                                                                style: TextStyle(fontFamily: 'Raleway'),
+                                                                              ),
+                                                                              subtitle: Text(
+                                                                                data[index].partOfSpeech,
+                                                                                style: TextStyle(fontFamily: 'Raleway'),
+                                                                              ),
+                                                                            ),
+                                                                          ],
+                                                                        );
+                                                                      });
+                                                            } else {
+                                                              return Center(
+                                                                  child:
+                                                                      CircularProgressIndicator());
+                                                            }
                                                           })); //.............................here
                                                 });
                                           },
@@ -258,7 +269,7 @@ class _DashboardState extends State<Dashboard> {
                                             child: Card(
                                               margin: EdgeInsets.only(
                                                   left: 6, right: 6),
-                                              elevation: 1,
+                                              elevation: 0,
                                               child: Center(
                                                 child: Padding(
                                                   padding:
@@ -352,7 +363,7 @@ class _DashboardState extends State<Dashboard> {
                                             child: Card(
                                               margin: EdgeInsets.only(
                                                   left: 6, right: 6),
-                                              elevation: 1,
+                                              elevation: 0,
                                               child: Center(
                                                 child: Padding(
                                                   padding:
