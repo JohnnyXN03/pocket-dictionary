@@ -7,6 +7,9 @@ import 'package:translator/translator.dart';
 import 'package:share_it/share_it.dart';
 import 'package:http/http.dart' as http;
 import './json.dart';
+import 'json.dart';
+import 'json.dart';
+import 'json.dart';
 
 class Dashboard extends StatefulWidget {
   @override
@@ -111,11 +114,22 @@ class _DashboardState extends State<Dashboard> {
   }
 
   // ignore: missing_return
-  Future<Meaning> fetch(String lng) async {
+  Future<List<Meaning>> fetch(String lng) async {
+    List<Meaning> enc;
     var translation = await translator.translate(_edit.text.trim(), to: "en");
-    var response = await http.get(_ur + lng + "/" + translation);
-    return Meaning.fromJson(json.decode(response.body));
+    await Future.delayed(Duration(seconds: 1));
+    print("Going for api");
+    var res = await http.get(Uri.encodeFull(_ur + lng + "/" + translation),
+        headers: {"Accept": "application/json"});
+    print(res.body);
+    if (res.statusCode == 200) {
+      var value = json.decode(res.body);
+      var rest = value["meanings"] as List;
+      print(rest);
+      //   enc = res.<Meaning>((json) => Meaning.fromJson(json)).toList();
+    }
   }
+  //_ur + lng + "/" + translation
 
   @override
   // ignore: unused_element
@@ -217,7 +231,7 @@ class _DashboardState extends State<Dashboard> {
                                                   //.........................................future builder here
                                                   return Dialog(
                                                       child: FutureBuilder<
-                                                              Meaning>(
+                                                              List<Meaning>>(
                                                           future: fetch(
                                                               _list[index]
                                                                   .toString()),
@@ -225,18 +239,18 @@ class _DashboardState extends State<Dashboard> {
                                                               snapshot) {
                                                             if (snapshot
                                                                 .hasData) {
-                                                              List<Meanings>
+                                                              List<Meaning>
                                                                   data =
-                                                                  snapshot.data
-                                                                      .meanings;
+                                                                  snapshot.data;
+
                                                               return ListView
                                                                   .builder(
-                                                                      itemCount: snapshot.data.meanings ==
+                                                                      itemCount: snapshot.data.length ==
                                                                               null
                                                                           ? 0
                                                                           : snapshot
                                                                               .data
-                                                                              .meanings,
+                                                                              .length,
                                                                       itemBuilder:
                                                                           (context,
                                                                               index) {
@@ -249,7 +263,7 @@ class _DashboardState extends State<Dashboard> {
                                                                                 style: TextStyle(fontFamily: 'Raleway'),
                                                                               ),
                                                                               subtitle: Text(
-                                                                                data[index].partOfSpeech,
+                                                                                data[index].word,
                                                                                 style: TextStyle(fontFamily: 'Raleway'),
                                                                               ),
                                                                             ),
